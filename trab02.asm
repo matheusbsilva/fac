@@ -16,21 +16,35 @@ main:
 max_number:
 	slt $t1, $a0, $a1 	# checa se primeiro valor lido($a0) é menor que o segundo($a1)
 	beq $t1, $zero, else	# caso o primeiro seja maior que o segundo pula para função else
-	move $s0, $a1		# carrega o segundo valor lido em $s0
-	jal mmc			# chama a rotina mmc
-
+	move $s0, $a1		# carrega o segundo valor lido, que é o maior, em $s0
+	move $s1, $a0		# carrega o primeiro valor lido, que é o menor em $s1
+	jal mdc			# chama a rotina mdc
+	
 else:
-	move $s0, $a0		# carrega o primeiro valor lido em $s0
-	jal mmc			# chama a rotina mmc
+	move $s0, $a0		# carrega o primeiro valor lido, que é o maior, em $s0
+	move $s1, $a1		# carrega o segundo valor lido, que é o menor, em $s1
+	jal mdc			# chama a rotina mdc
 # =================== Fim da rotina
 		
-#########  rotina para calcular o mmc	
-mmc:
+#########  rotina para calcular o mdc	
+mdc:
+	beq $s1, $zero, end	# checa se menor valor é igual a zero, caso seja pula para rotina end
+	move $t3, $s1		# copia menor valor para $t3
+	rem $s1, $s0, $s1	# carrega o resto da divisão do maior($s0) pelo menor valor($s1) em $s1
+	move $s0, $t3		# copia o valor de $t3 para o $s0
+	jal mdc			# chama rotina mdc
 	
-
+end:
+	move $t0, $s0		# copia o resultado do mdc para $t0
 # =================== Fim da rotina
 
-	jal max_number # chama rotina para pegar maior valor entre os lidos
+#########  rotina para calcular o mmc
+mmc:
+	mult $a0, $a1	# multiplica valores de entrada
+	mflo $t5	# move resultado da multiplicação para $t5
+	div $t5, $t0 	# divide o resultado da multiplicação pelo mdc($t0)
+	mflo $t1	# move o quociente da divisão para $t1
+# =================== Fim da rotina	
 	
 # =================== IMPLEMENTE AQUI SUA SOLUCAO: FIM      
       
