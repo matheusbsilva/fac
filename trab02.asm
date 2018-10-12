@@ -1,14 +1,16 @@
-# FAC: TRABALHO 01
+# FAC: TRABALHO 02
 	.text
 main:
-	li $v0, 5	# load appropriate system call code into register $v0;
-			# code for reading integer is 5
-	syscall		# call operating system to perform operation
-	move $a0, $v0	# O PRIMEIRO VALOR LIDO DO TECLADO ESTA DISPONIVEL EM $A0
-	li $v0, 5	# load appropriate system call code into register $v0;
-			# code for reading integer is 5
-	syscall		# call operating system to perform operation
-	move $a1, $v0	# O SEGUNDO VALOR LIDO DO TECLADO ESTA DISPONIVEL EM $A1
+	li $v0, 5		# load appropriate system call code into register $v0;
+				# code for reading integer is 5
+	syscall			# call operating system to perform operation
+	move $a0, $v0		# O PRIMEIRO VALOR LIDO DO TECLADO ESTA DISPONIVEL EM $A0
+	li $v0, 5		# load appropriate system call code into register $v0;
+				# code for reading integer is 5
+	syscall			# call operating system to perform operation
+	move $a1, $v0		# O SEGUNDO VALOR LIDO DO TECLADO ESTA DISPONIVEL EM $A1
+	blt $a0, $zero, print2	# caso o primeiro valor lido($a0) for menor que 0, será retornado a funcao print2: retorno invalido
+	blt $a1, $zero, print2	# caso o primeiro valor lido($a1) for menor que 0, será retornado a funcao print2: retorno invalido
       
 # =================== IMPLEMENTE AQUI SUA SOLUCAO: INICIO
 
@@ -58,6 +60,7 @@ space:		.asciiz  " "          # space
 new_line:	.asciiz  "\n"         # newline
 string_MDC:	.asciiz  "MDC: "
 string_MMC:	.asciiz  "\nMMC: "
+string_invalid:	.asciiz  "\nEntrada invalida."
       .text
 print:	la   $a0, string_MDC  
       	li   $v0, 4		# specify Print String service
@@ -71,4 +74,14 @@ print:	la   $a0, string_MDC
       	move   $a0, $t1      	# 
 	li   $v0, 1           	# specify Print Integer service
       	syscall               	# print $t1
-	jr   $ra              	# return
+	li   $v0, 10          # system call for exit
+      	syscall               # we are out of here.
+	
+#########  routine to print invalid messages
+
+print2:	la   $a0, string_invalid  
+      	li   $v0, 4		# specify Print String service
+      	syscall               	# print heading
+	li   $v0, 10          # system call for exit
+      	syscall               # we are out of here.
+
